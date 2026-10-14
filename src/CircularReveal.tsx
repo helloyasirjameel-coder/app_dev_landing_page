@@ -4,7 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
-/** Fill the viewport with dark color before the following section scrolls into view. */
+/** Overlap the services' final viewport, then fill it before the portfolio enters. */
 export default function CircularReveal() {
   const sceneRef = useRef<HTMLDivElement>(null)
   const layerRef = useRef<HTMLDivElement>(null)
@@ -32,7 +32,8 @@ export default function CircularReveal() {
         },
       })
 
-      reveal.fromTo(layer, { clipPath: () => circle(50) }, {
+      // Start entirely hidden; no small circle scrolls into view before the pin.
+      reveal.fromTo(layer, { clipPath: () => circle(0) }, {
         clipPath: () => circle(viewportRadius()),
         duration: 1,
         ease: 'power1.inOut',

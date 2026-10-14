@@ -1,4 +1,4 @@
-.portfolio-reveal{position:relative;height:100dvh;overflow:hidden;background:var(--surface);isolation:isolate}
+.portfolio-reveal{position:relative;z-index:1;height:100dvh;margin-top:-100dvh;overflow:hidden;isolation:isolate;pointer-events:none}
 .portfolio-reveal-layer{position:absolute;inset:0;background:#111}
 .latest-work{position:relative;padding-block:96px 130px;background:#111;color:#fefefe;scroll-margin-top:36px}
 .portfolio-inner{width:min(1440px,100%);margin:auto;padding-inline:clamp(24px,4.5vw,66px)}
