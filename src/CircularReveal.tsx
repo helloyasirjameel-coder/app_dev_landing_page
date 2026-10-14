@@ -23,7 +23,8 @@ export default function CircularReveal() {
         scrollTrigger: {
           trigger: scene,
           start: 'top top',
-          end: () => `+=${viewportHeight() * 1.2}`,
+          // Keep the fill to roughly one or two ordinary wheel gestures.
+          end: () => `+=${gsap.utils.clamp(160, 240, viewportHeight() * 0.25)}`,
           pin: true,
           scrub: true,
           anticipatePin: 1,
@@ -36,7 +37,7 @@ export default function CircularReveal() {
       reveal.fromTo(layer, { clipPath: () => circle(0) }, {
         clipPath: () => circle(viewportRadius()),
         duration: 1,
-        ease: 'power1.inOut',
+        ease: 'power1.out',
       })
 
     }, scene)
