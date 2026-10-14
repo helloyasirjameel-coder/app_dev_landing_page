@@ -21,10 +21,16 @@ export default function AppPortfolio({ action }: { action: ReactNode }) {
   useLayoutEffect(() => {
     const media = gsap.matchMedia()
     media.add('(prefers-reduced-motion: no-preference)', () => {
+      gsap.from('.latest-work-title-line > span', {
+        yPercent: 105,
+        stagger: 0.1,
+        ease: 'power2.out',
+        scrollTrigger: { trigger: '.latest-work-heading', start: 'top 95%', end: 'bottom 65%', scrub: 0.5 },
+      })
       sectionRef.current!.querySelectorAll<HTMLElement>('.latest-project-media').forEach((frame) => {
         const reveal = gsap.timeline({
           defaults: { duration: 1, ease: 'power1.out' },
-          scrollTrigger: { trigger: frame, pinnedContainer: '.portfolio-reveal', start: 'top 95%', end: 'bottom top', toggleActions: 'play reverse play reverse' },
+          scrollTrigger: { trigger: frame, start: 'top 95%', end: 'bottom top', toggleActions: 'play reverse play reverse' },
         })
         reveal.fromTo(frame, { scale: 0.9 }, { scale: 1 }, 0)
         reveal.fromTo(frame.querySelector('img'), { scale: 1.3 }, { scale: 1 }, 0)
@@ -33,7 +39,8 @@ export default function AppPortfolio({ action }: { action: ReactNode }) {
     return () => media.revert()
   }, [])
 
-  return <CircularReveal>
+  return <>
+    <CircularReveal/>
     <section ref={sectionRef} className="latest-work" id="work" aria-labelledby="latest-work-heading">
       <div className="portfolio-inner">
         <div className="latest-work-heading">
@@ -58,5 +65,5 @@ export default function AppPortfolio({ action }: { action: ReactNode }) {
         </div>
       </div>
     </section>
-  </CircularReveal>
+  </>
 }
