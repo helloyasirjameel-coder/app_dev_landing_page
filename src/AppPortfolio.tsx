@@ -14,58 +14,36 @@ const projects = [
   { image: 'commerce', title: 'A better way to browse.', category: 'E-commerce · App concept', alt: 'Fashion shopping app featuring product details, collections and a wishlist' },
 ]
 
-function AppToDarkTransition() {
+function CircleToDarkTransition() {
   const sceneRef = useRef<HTMLDivElement>(null)
 
   useLayoutEffect(() => {
     const scene = sceneRef.current!
-    const tile = scene.querySelector<HTMLElement>('.app-transition-tile')!
-    const symbol = scene.querySelector<SVGElement>('.app-transition-symbol')!
-    const hint = scene.querySelector<HTMLElement>('.app-transition-hint')!
+    const circle = scene.querySelector<HTMLElement>('.portfolio-transition-circle')!
     const media = gsap.matchMedia()
 
     media.add('(prefers-reduced-motion: no-preference)', () => {
-      const expansion = gsap.timeline({
-        defaults: { ease: 'none' },
+      gsap.fromTo(circle, { scale: 1 }, {
+        // A circle must cover the viewport diagonal to hide all four light corners.
+        scale: () => (Math.hypot(scene.clientWidth, scene.clientHeight) + 8) / circle.offsetWidth,
+        ease: 'power1.inOut',
         scrollTrigger: {
           trigger: scene,
           start: 'top top',
-          end: () => `+=${scene.clientHeight * 1.15}`,
+          end: () => `+=${scene.clientHeight * 0.85}`,
           pin: true,
           scrub: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
         },
       })
-      expansion.fromTo(tile, { rotation: -12 }, { rotation: 0, duration: 0.25 }, 0)
-      expansion.to(hint, { opacity: 0, y: 12, duration: 0.16 }, 0)
-      expansion.to(symbol, { opacity: 0, scale: 0.7, duration: 0.16 }, 0.18)
-      expansion.fromTo(tile, { width: 132, height: 132, borderRadius: 32 }, {
-        width: () => scene.clientWidth + 4,
-        height: () => scene.clientHeight + 4,
-        borderRadius: 0,
-        duration: 0.75,
-        ease: 'power2.inOut',
-      }, 0.2)
-
-      return () => { expansion.scrollTrigger?.kill(); expansion.kill() }
     }, scene)
 
     return () => media.revert()
   }, [])
 
-  return <div className="app-transition-stage" ref={sceneRef} aria-hidden="true">
-    <div className="app-transition-tile">
-      <svg className="app-transition-symbol" viewBox="0 0 64 64" fill="none">
-        <rect x="19" y="10" width="26" height="44" rx="7" stroke="currentColor" strokeWidth="2.5"/>
-        <path d="M28 16h8M29 48h6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
-        <rect x="25" y="24" width="6" height="6" rx="1.5" fill="currentColor"/>
-        <rect x="34" y="24" width="6" height="6" rx="1.5" fill="currentColor" opacity=".45"/>
-        <rect x="25" y="33" width="6" height="6" rx="1.5" fill="currentColor" opacity=".45"/>
-        <rect x="34" y="33" width="6" height="6" rx="1.5" fill="currentColor"/>
-      </svg>
-    </div>
-    <p className="app-transition-hint">Small screens. Endless possibilities.<span>Keep scrolling <span>↓</span></span></p>
+  return <div className="portfolio-transition-stage" ref={sceneRef} aria-hidden="true">
+    <div className="portfolio-transition-circle"/>
   </div>
 }
 
@@ -94,11 +72,11 @@ export default function AppPortfolio({ action }: { action: ReactNode }) {
   }, [])
 
   return <>
-    <AppToDarkTransition/>
+    <CircleToDarkTransition/>
     <section ref={sectionRef} className="latest-work" id="work" aria-labelledby="latest-work-heading">
       <div className="portfolio-inner">
         <div className="latest-work-heading">
-          <p className="portfolio-label">// App concepts</p>
+          <p className="portfolio-label">// Selected app concepts</p>
           <h2 className="latest-work-title" id="latest-work-heading">
             <span className="latest-work-title-line"><span>Take a look at</span></span>{' '}
             <span className="latest-work-title-line"><span>our app concepts</span></span>
