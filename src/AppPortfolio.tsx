@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, type ReactNode } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import CircularReveal from './CircularReveal'
 import './AppPortfolio.css'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -14,55 +15,16 @@ const projects = [
   { image: 'commerce', title: 'A better way to browse.', category: 'E-commerce · App concept', alt: 'Fashion shopping app featuring product details, collections and a wishlist' },
 ]
 
-function CircleToDarkTransition() {
-  const sceneRef = useRef<HTMLDivElement>(null)
-
-  useLayoutEffect(() => {
-    const scene = sceneRef.current!
-    const circle = scene.querySelector<HTMLElement>('.portfolio-transition-circle')!
-    const media = gsap.matchMedia()
-
-    media.add('(prefers-reduced-motion: no-preference)', () => {
-      gsap.fromTo(circle, { scale: 1 }, {
-        // A circle must cover the viewport diagonal to hide all four light corners.
-        scale: () => (Math.hypot(scene.clientWidth, scene.clientHeight) + 8) / circle.offsetWidth,
-        ease: 'power1.inOut',
-        scrollTrigger: {
-          trigger: scene,
-          start: 'top top',
-          end: () => `+=${scene.clientHeight * 0.85}`,
-          pin: true,
-          scrub: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        },
-      })
-    }, scene)
-
-    return () => media.revert()
-  }, [])
-
-  return <div className="portfolio-transition-stage" ref={sceneRef} aria-hidden="true">
-    <div className="portfolio-transition-circle"/>
-  </div>
-}
-
 export default function AppPortfolio({ action }: { action: ReactNode }) {
   const sectionRef = useRef<HTMLElement>(null)
 
   useLayoutEffect(() => {
     const media = gsap.matchMedia()
     media.add('(prefers-reduced-motion: no-preference)', () => {
-      gsap.from('.latest-work-title-line > span', {
-        yPercent: 105,
-        stagger: 0.1,
-        ease: 'power2.out',
-        scrollTrigger: { trigger: '.latest-work-heading', start: 'top 95%', end: 'bottom 65%', scrub: 0.5 },
-      })
       sectionRef.current!.querySelectorAll<HTMLElement>('.latest-project-media').forEach((frame) => {
         const reveal = gsap.timeline({
           defaults: { duration: 1, ease: 'power1.out' },
-          scrollTrigger: { trigger: frame, start: 'top 95%', end: 'bottom top', toggleActions: 'play reverse play reverse' },
+          scrollTrigger: { trigger: frame, pinnedContainer: '.portfolio-reveal', start: 'top 95%', end: 'bottom top', toggleActions: 'play reverse play reverse' },
         })
         reveal.fromTo(frame, { scale: 0.9 }, { scale: 1 }, 0)
         reveal.fromTo(frame.querySelector('img'), { scale: 1.3 }, { scale: 1 }, 0)
@@ -71,8 +33,7 @@ export default function AppPortfolio({ action }: { action: ReactNode }) {
     return () => media.revert()
   }, [])
 
-  return <>
-    <CircleToDarkTransition/>
+  return <CircularReveal>
     <section ref={sectionRef} className="latest-work" id="work" aria-labelledby="latest-work-heading">
       <div className="portfolio-inner">
         <div className="latest-work-heading">
@@ -97,5 +58,5 @@ export default function AppPortfolio({ action }: { action: ReactNode }) {
         </div>
       </div>
     </section>
-  </>
+  </CircularReveal>
 }
